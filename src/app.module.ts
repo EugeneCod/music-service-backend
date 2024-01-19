@@ -11,6 +11,7 @@ import { FileModule } from './file/file.module';
 @Module({
   imports: [
     MongooseModule.forRoot(process.env.MONGO_URL),
+    // Раздача статики
     ServeStaticModule.forRoot({
       rootPath: path.resolve(__dirname, 'static'),
     }),

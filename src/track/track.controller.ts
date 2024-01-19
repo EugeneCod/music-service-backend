@@ -7,6 +7,8 @@ import {
   Delete,
   UseInterceptors,
   UploadedFiles,
+  Patch,
+  Query,
 } from '@nestjs/common';
 import { TrackService } from './track.service';
 import { CreateTrackDto } from './dto/create-track.dto';
@@ -25,7 +27,6 @@ export class TrackController {
       { name: 'audio', maxCount: 1 },
     ]),
   )
-
   create(
     @UploadedFiles()
     files: { picture?: Express.Multer.File[]; audio?: Express.Multer.File[] },
@@ -36,8 +37,13 @@ export class TrackController {
   }
 
   @Get()
-  getAll() {
-    return this.trackService.getAll();
+  getAll(@Query('count') count: number, @Query('offset') offset: number) {
+    return this.trackService.getAll(count, offset);
+  }
+
+  @Get('/search')
+  search(@Query('query') query: string) {
+    return this.trackService.search(query);
   }
 
   @Get(':id')
@@ -55,7 +61,7 @@ export class TrackController {
     return this.trackService.addComment(dto);
   }
 
-  @Post('/listen/:id')
+  @Patch('/listen/:id')
   incListeningCounter(@Param() params: { id: ObjectId }) {
     return this.trackService.incListeningCounter(params.id);
   }
